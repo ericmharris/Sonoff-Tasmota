@@ -128,7 +128,11 @@ enum UserSelectablePins {
   GPIO_SDS0X1_TX,      // Nova Fitness SDS011 Serial interface
   GPIO_HX711_SCK,      // HX711 Load Cell clock
   GPIO_HX711_DAT,      // HX711 Load Cell data
-  GPIO_TX20_TXD_BLACK,  // TX20 Transmission Pin
+  GPIO_TX20_TXD_BLACK, // TX20 Transmission Pin
+  GPIO_RFSEND,         // RF transmitter
+  GPIO_RFRECV,         // RF receiver
+  GPIO_TUYA_TX,        // Tuya Serial interface
+  GPIO_TUYA_RX,        // Tuya Serial interface
   GPIO_SENSOR_END };
 
 // Programmer selectable GPIO functionality offset by user selectable GPIOs
@@ -184,7 +188,9 @@ const char kSensorNames[] PROGMEM =
   D_SENSOR_PZEM016_RX "|" D_SENSOR_PZEM017_RX "|"
   D_SENSOR_DFR562 "|" D_SENSOR_SDS0X1_TX "|"
   D_SENSOR_HX711_SCK "|" D_SENSOR_HX711_DAT "|"
-  D_SENSOR_TX20_TX;
+  D_SENSOR_TX20_TX "|"
+  D_SENSOR_RFSEND "|" D_SENSOR_RFRECV "|"
+  D_SENSOR_TUYA_TX "|" D_SENSOR_TUYA_RX;
 
 /********************************************************************************************/
 
@@ -341,6 +347,8 @@ const uint8_t kGpioNiceList[GPIO_SENSOR_END] PROGMEM = {
   GPIO_WS2812,         // WS2812 Led string
   GPIO_IRSEND,         // IR remote
   GPIO_IRRECV,         // IR receiver
+  GPIO_RFSEND,         // RF transmitter
+  GPIO_RFRECV,         // RF receiver
   GPIO_SR04_TRIG,      // SR04 Trigger pin
   GPIO_SR04_ECHO,      // SR04 Echo pin
   GPIO_TM16CLK,        // TM1638 Clock
@@ -366,7 +374,9 @@ const uint8_t kGpioNiceList[GPIO_SENSOR_END] PROGMEM = {
   GPIO_SDM630_RX,      // SDM630 Serial interface
   GPIO_PMS5003,        // Plantower PMS5003 Serial interface
   GPIO_TX20_TXD_BLACK, // TX20 Transmission Pin
-  GPIO_MP3_DFR562      // RB-DFR-562, DFPlayer Mini MP3 Player Serial interface
+  GPIO_MP3_DFR562,     // RB-DFR-562, DFPlayer Mini MP3 Player Serial interface
+  GPIO_TUYA_TX,        // Tuya Serial interface
+  GPIO_TUYA_RX         // Tuya Serial interface
 };
 
 const uint8_t kModuleNiceList[MAXMODULE] PROGMEM = {
@@ -1145,9 +1155,9 @@ const mytmplt kModules[MAXMODULE] PROGMEM = {
   { "Tuya Dimmer",     // Tuya Dimmer (ESP8266 w/ separate MCU dimmer)
                        // https://www.amazon.com/gp/product/B07CTNSZZ8/ref=oh_aui_detailpage_o00_s00?ie=UTF8&psc=1
      GPIO_KEY1,        // Virtual Button (controlled by MCU)
-     GPIO_TXD,         // GPIO01 MCU serial control
+     GPIO_USER,        // GPIO01 MCU serial control
      GPIO_USER,
-     GPIO_RXD,         // GPIO03 MCU serial control
+     GPIO_USER,        // GPIO03 MCU serial control
      GPIO_USER,
      GPIO_USER,
      0, 0, 0, 0, 0, 0, // Flash connection
