@@ -196,7 +196,12 @@ int TextToInt(char *str)
 
 char* dtostrfd(double number, unsigned char prec, char *s)
 {
-  return dtostrf(number, 1, prec, s);
+  if ((isnan(number)) || (isinf(number))) {  // Fix for JSON output (https://stackoverflow.com/questions/1423081/json-left-out-infinity-and-nan-json-status-in-ecmascript)
+    strcpy(s, "null");
+    return s;
+  } else {
+    return dtostrf(number, 1, prec, s);
+  }
 }
 
 char* Unescape(char* buffer, uint16_t* size)
@@ -630,10 +635,6 @@ boolean GetUsedInModule(byte val, uint8_t *arr)
   if (GPIO_I2C_SCL == val) { return true; }
   if (GPIO_I2C_SDA == val) { return true; }
 #endif
-#ifndef USE_SR04
-  if (GPIO_SR04_TRIG == val) { return true; }
-  if (GPIO_SR04_ECHO == val) { return true; }
-#endif
 #ifndef USE_WS2812
   if (GPIO_WS2812 == val) { return true; }
 #endif
@@ -706,6 +707,14 @@ boolean GetUsedInModule(byte val, uint8_t *arr)
   if (GPIO_HX711_SCK == val) { return true; }
   if (GPIO_HX711_DAT == val) { return true; }
 #endif
+#ifndef USE_TX20_WIND_SENSOR
+  if (GPIO_TX20_TXD_BLACK == val) { return true; }
+#endif
+#ifndef USE_RC_SWITCH
+  if (GPIO_RFSEND == val) { return true; }
+  if (GPIO_RFRECV == val) { return true; }
+#endif
+
   if ((val >= GPIO_REL1) && (val < GPIO_REL1 + MAX_RELAYS)) {
     offset = (GPIO_REL1_INV - GPIO_REL1);
   }
@@ -1019,6 +1028,10 @@ void GetFeatures()
 #ifdef USE_TUYA_DIMMER
   feature_drv2 |= 0x00008000;  // xdrv_16_tuyadimmer.ino
 #endif
+#ifdef USE_RC_SWITCH
+  feature_drv2 |= 0x00010000;  // xdrv_17_rcswitch.ino
+#endif
+
 
 
 #ifdef NO_EXTRA_4K_HEAP
@@ -1544,19 +1557,29 @@ void WifiCheck(uint8_t param)
           ota_state_flag = 3;
         }
 #endif  // BE_MINIMAL
+
 #ifdef USE_DISCOVERY
         if (!mdns_begun) {
-          mdns_begun = MDNS.begin(my_hostname);
-          snprintf_P(log_data, sizeof(log_data), PSTR(D_LOG_MDNS "%s"), (mdns_begun) ? D_INITIALIZED : D_FAILED);
-          AddLog(LOG_LEVEL_INFO);
+          if (mdns_delayed_start) {
+            AddLog_P(LOG_LEVEL_INFO, PSTR(D_LOG_MDNS D_ATTEMPTING_CONNECTION));
+            mdns_delayed_start--;
+          } else {
+            mdns_delayed_start = Settings.param[P_MDNS_DELAYED_START];
+            mdns_begun = MDNS.begin(my_hostname);
+            snprintf_P(log_data, sizeof(log_data), PSTR(D_LOG_MDNS "%s"), (mdns_begun) ? D_INITIALIZED : D_FAILED);
+            AddLog(LOG_LEVEL_INFO);
+          }
         }
 #endif  // USE_DISCOVERY
+
 #ifdef USE_WEBSERVER
         if (Settings.webserver) {
           StartWebserver(Settings.webserver, WiFi.localIP());
 #ifdef USE_DISCOVERY
 #ifdef WEBSERVER_ADVERTISE
-          MDNS.addService("http", "tcp", WEB_PORT);
+          if (mdns_begun) {
+            MDNS.addService("http", "tcp", WEB_PORT);
+          }
 #endif  // WEBSERVER_ADVERTISE
 #endif  // USE_DISCOVERY
         } else {
@@ -1566,12 +1589,14 @@ void WifiCheck(uint8_t param)
         if (Settings.flag2.emulation) { UdpConnect(); }
 #endif  // USE_EMULATION
 #endif  // USE_WEBSERVER
+
 #ifdef USE_KNX
         if (!knx_started && Settings.flag.knx_enabled) {
           KNXStart();
           knx_started = true;
         }
 #endif  // USE_KNX
+
       } else {
         WifiState(0);
 #if defined(USE_WEBSERVER) && defined(USE_EMULATION)
@@ -1631,38 +1656,6 @@ void EspRestart()
 {
   ESP.restart();
 }
-
-#ifdef USE_DISCOVERY
-/*********************************************************************************************\
- * mDNS
-\*********************************************************************************************/
-
-#ifdef MQTT_HOST_DISCOVERY
-boolean MdnsDiscoverMqttServer()
-{
-  if (!mdns_begun) {
-    return false;
-  }
-
-  int n = MDNS.queryService("mqtt", "tcp");  // Search for mqtt service
-
-  snprintf_P(log_data, sizeof(log_data), PSTR(D_LOG_MDNS D_QUERY_DONE " %d"), n);
-  AddLog(LOG_LEVEL_INFO);
-
-  if (n > 0) {
-    // Note: current strategy is to get the first MQTT service (even when many are found)
-    snprintf_P(Settings.mqtt_host, sizeof(Settings.mqtt_host), MDNS.IP(0).toString().c_str());
-    Settings.mqtt_port = MDNS.port(0);
-
-    snprintf_P(log_data, sizeof(log_data), PSTR(D_LOG_MDNS D_MQTT_SERVICE_FOUND " %s, " D_IP_ADDRESS " %s, " D_PORT " %d"),
-      MDNS.hostname(0).c_str(), Settings.mqtt_host, Settings.mqtt_port);
-    AddLog(LOG_LEVEL_INFO);
-  }
-
-  return n > 0;
-}
-#endif  // MQTT_HOST_DISCOVERY
-#endif  // USE_DISCOVERY
 
 /*********************************************************************************************\
  * Basic I2C routines
@@ -1953,6 +1946,10 @@ String GetDateAndTime(byte time_type)
   TIME_T tmpTime;
 
   switch (time_type) {
+    case DT_ENERGY:
+      BreakTime(Settings.energy_kWhtotal_time, tmpTime);
+      tmpTime.year += 1970;
+      break;
     case DT_UTC:
       BreakTime(utc_time, tmpTime);
       tmpTime.year += 1970;
@@ -1971,7 +1968,8 @@ String GetDateAndTime(byte time_type)
   snprintf_P(dt, sizeof(dt), PSTR("%04d-%02d-%02dT%02d:%02d:%02d"),
     tmpTime.year, tmpTime.month, tmpTime.day_of_month, tmpTime.hour, tmpTime.minute, tmpTime.second);
 
-  if (Settings.flag3.time_append_timezone && (time_type == DT_LOCAL)) {
+  if (Settings.flag3.time_append_timezone && (DT_LOCAL == time_type)) {
+//  if (Settings.flag3.time_append_timezone && ((DT_LOCAL == time_type) || (DT_ENERGY == time_type))) {
     snprintf_P(dt, sizeof(dt), PSTR("%s%+03d:%02d"), dt, time_timezone / 10, abs((time_timezone % 10) * 6));  // if timezone = +2:30 then time_timezone = 25
   }
 
@@ -2232,6 +2230,7 @@ void RtcSecond()
     }
     local_time += time_offset;
     time_timezone = time_offset / 360;  // (SECS_PER_HOUR / 10) fails as it is defined as UL
+    if (!Settings.energy_kWhtotal_time) { Settings.energy_kWhtotal_time = local_time; }
   }
   BreakTime(local_time, RtcTime);
   if (!RtcTime.hour && !RtcTime.minute && !RtcTime.second && RtcTime.valid) {

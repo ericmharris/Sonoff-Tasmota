@@ -525,6 +525,10 @@
 #define D_SENSOR_HX711_SCK "HX711 SCK"
 #define D_SENSOR_HX711_DAT "HX711 DAT"
 #define D_SENSOR_TX20_TX "TX20"
+#define D_SENSOR_RFSEND "RFSend"
+#define D_SENSOR_RFRECV "RFrecv"
+#define D_SENSOR_TUYA_TX "Tuya Tx"
+#define D_SENSOR_TUYA_RX "Tuya Rx"
 
 // Units
 #define D_UNIT_AMPERE "安"
@@ -533,7 +537,7 @@
 #define D_UNIT_HOUR "時"
 #define D_UNIT_INCREMENTS "inc"
 #define D_UNIT_KILOGRAM "kg"
-#define D_UNIT_KILOMETER_PER_HOUR "kmph"  // or "km/h"
+#define D_UNIT_KILOMETER_PER_HOUR "km/h"  // or "km/h"
 #define D_UNIT_KILOOHM "千歐"
 #define D_UNIT_KILOWATTHOUR "千瓦時"
 #define D_UNIT_LUX "勒克斯"
