@@ -88,19 +88,19 @@ Examples :
 \*********************************************************************************************/
 
 // *******************    Enable Burning Man *************************//
-// #define USE_BURNING_MAN       
+// #define USE_BURNING_MAN
 //// Disable BM/RPI Setup
-// #ifdef USE_BURNING_MAN 
-// #undef USE_BURNING_MAN 
+// #ifdef USE_BURNING_MAN
+// #undef USE_BURNING_MAN
 // #endif
 // *******************  END Enable Burning Man *************************//
 
 #define MQTT_PREFIX                 "tasmota"
-#define TASMOTA_VERSION                "6.2.1"          // used in OTA URL
+#define TASMOTA_VERSION                "6.3.0"          // used in OTA URL
 #define FIREWALL_IP                "192.168.200.107"          // EMH, IP address of firewall.local
 
 #ifdef USE_BURNING_MAN
-#undef  FIREWALL_IP 
+#undef  FIREWALL_IP
 #define FIREWALL_IP            "192.168.100.1"
 
 #undef  WIFI_IP_ADDRESS
@@ -109,44 +109,44 @@ Examples :
 #undef  WIFI_GATEWAY
 #define WIFI_GATEWAY           "192.168.100.1"   // [IpAddress2] If not using DHCP set Gateway IP address
 
-#undef  WIFI_SUBNETMASK 
+#undef  WIFI_SUBNETMASK
 #define WIFI_SUBNETMASK        "255.255.255.0"   // [IpAddress3] If not using DHCP set Network mask
 
-#undef  WIFI_DNS 
+#undef  WIFI_DNS
 #define WIFI_DNS               "192.168.100.1"    // [IpAddress4] If not using DHCP set DNS IP address (might be equal to WIFI_GATEWAY)
 #endif
 
 // -- Device  -------------------------------------
-// DEVICE is the generic type of hardware/device, ie. 
-//   Sonoff Basic -> sonoff-basic 
+// DEVICE is the generic type of hardware/device, ie.
+//   Sonoff Basic -> sonoff-basic
 //   Sonoff Slampher -> sonoff-slampher
-// #define DEVICE_TYPE  "sonoff-basic"   
-// #define DEVICE_TYPE  "sonoff-slampher"   
-// #define DEVICE_TYPE  "sonoff-b1"   
-// #define DEVICE_TYPE  "sonoff-pro"   
-// #define DEVICE_TYPE  "sonoff-basic"   
-// #define DEVICE_TYPE  "sonoff-dev"   
-// #define DEVICE_TYPE  "sonoff-sv"   
-// #define DEVICE_TYPE  "node-mcu"   
+// #define DEVICE_TYPE  "sonoff-basic"
+// #define DEVICE_TYPE  "sonoff-slampher"
+// #define DEVICE_TYPE  "sonoff-b1"
+// #define DEVICE_TYPE  "sonoff-pro"
+// #define DEVICE_TYPE  "sonoff-basic"
+// #define DEVICE_TYPE  "sonoff-dev"
+// #define DEVICE_TYPE  "sonoff-sv"
+// #define DEVICE_TYPE  "node-mcu"
 
-// #define DEVICE_TYPE  "wemos-d1-mini"   
+// #define DEVICE_TYPE  "wemos-d1-mini"
 // #define DEVICE_TYPE  "wemos-d1-pro"
-// #define DEVICE_TYPE  "sonoff-sc"   
-// #define DEVICE_TYPE  "sonoff-rf-bridge"   
-// #define DEVICE_TYPE  "sonoff-rf"   
-// #define DEVICE_TYPE  "sonoff-s31"   
-// #define DEVICE_TYPE  "sonoff-12v1ch"   
+// #define DEVICE_TYPE  "sonoff-sc"
+// #define DEVICE_TYPE  "sonoff-rf-bridge"
+// #define DEVICE_TYPE  "sonoff-rf"
+// #define DEVICE_TYPE  "sonoff-s31"
+// #define DEVICE_TYPE  "sonoff-12v1ch"
 
 
-// #define IS_WEMOS_D1_MINI  "04"  
-// #define IS_SONOFF_SV      "02"  
-// #define IS_SONOFF_DEV      "01"  
-// #define IS_SONOFF_SC      "01"  
-#define IS_SONOFF_SLAMPHER   "01"
-// #define IS_SONOFF_B1      "01"  
-// #define IS_SONOFF_RF      "01"  
-// #define IS_SONOFF_S31      "03"  
-// #define IS_SONOFF_RF_BRIDGE      "01"  
+#define IS_WEMOS_D1_MINI  "06"
+// #define IS_SONOFF_SV      "02"
+// #define IS_SONOFF_DEV      "01"
+// #define IS_SONOFF_SC      "01"
+// #define IS_SONOFF_SLAMPHER   "02"
+// #define IS_SONOFF_B1      "01"
+// #define IS_SONOFF_RF      "01"
+// #define IS_SONOFF_S31      "03"
+// #define IS_SONOFF_RF_BRIDGE      "01"
 
 // -- Device Number  -------------------------------------
 // DEVICE_NUM identifies the particular device
@@ -159,7 +159,7 @@ Examples :
 
 /*********************************************************************************************\
  *  Disable Tasmota Features
-\*********************************************************************************************/ 
+\*********************************************************************************************/
 //  ####################       RULES  ####################
 #define USE_RULES                                // Add support for rules (+4k4 code)
 // #undef USE_RULES                                // Remove support for rules
@@ -170,7 +170,7 @@ Examples :
 //// 	1. recompile the program after you enable ADC input in file user_config.h by adding two slashes in front of line 159:
 //// //#define USE_ADC_VCC
 //// 	1. Once the program is loaded you need to select another module as the Sonoff Basic does not support ADC input.
-////   Open de confiuration web page and select module Wemos D1 mini. This enables ADC by default. You will have to add all 
+////   Open de confiuration web page and select module Wemos D1 mini. This enables ADC by default. You will have to add all
 ////   standard Sonoff Basic IO as defined in file sonoff_template.h near line 240/247.
 //// Example with yet to release new version:
 #define USE_ADC_VCC                              // Display Vcc in Power status. Disable for use as Analog input on selected devices
@@ -186,59 +186,59 @@ Examples :
 
 
 #ifdef IS_WEMOS_D1_MINI
-#define DEVICE_TYPE  "wemos-d1-mini"   
+#define DEVICE_TYPE  "wemos-d1-mini"
 #define DEVICE_NUM  IS_WEMOS_D1_MINI
 #define MY_WIFI_CONFIG_TOOL       WIFI_WAIT
-#define MY_USE_DISPLAY 
+#define MY_USE_DISPLAY
 #endif
 
 #ifdef IS_SONOFF_SV
 #define DEVICE_TYPE  "sonoff-sv"
 #define DEVICE_NUM  IS_SONOFF_SV
 #define MY_WIFI_CONFIG_TOOL       WIFI_WAIT
-#define MY_MQTT_USER        DEVICE_TYPE "-" DEVICE_NUM       
+#define MY_MQTT_USER        DEVICE_TYPE "-" DEVICE_NUM
 #endif
 
 #ifdef IS_SONOFF_SC
 #define DEVICE_TYPE  "sonoff-sc"
 #define DEVICE_NUM  IS_SONOFF_SC
-#define MY_WIFI_CONFIG_TOOL       WIFI_MANAGER  
+#define MY_WIFI_CONFIG_TOOL       WIFI_MANAGER
 #endif
 
-#ifdef IS_SONOFF_SLAMPHER   
+#ifdef IS_SONOFF_SLAMPHER
 #define DEVICE_TYPE  "sonoff-slampher"
-#define DEVICE_NUM  IS_SONOFF_SLAMPHER 
-#define MY_WIFI_CONFIG_TOOL       WIFI_MANAGER  
+#define DEVICE_NUM  IS_SONOFF_SLAMPHER
+#define MY_WIFI_CONFIG_TOOL       WIFI_MANAGER
 #endif
 
 #ifdef IS_SONOFF_B1
 #define DEVICE_TYPE  "sonoff-b1"
 #define DEVICE_NUM  IS_SONOFF_B1
-#define MY_WIFI_CONFIG_TOOL       WIFI_MANAGER  
+#define MY_WIFI_CONFIG_TOOL       WIFI_MANAGER
 #endif
 
 #ifdef IS_SONOFF_RF
 #define DEVICE_TYPE  "sonoff-rf"
 #define DEVICE_NUM  IS_SONOFF_RF
-#define MY_WIFI_CONFIG_TOOL       WIFI_MANAGER  
+#define MY_WIFI_CONFIG_TOOL       WIFI_MANAGER
 #endif
 
 #ifdef IS_SONOFF_RF_BRIDGE
 #define DEVICE_TYPE  "sonoff-rf-bridge"
 #define DEVICE_NUM  IS_SONOFF_RF_BRIDGE
-#define MY_WIFI_CONFIG_TOOL       WIFI_MANAGER  
+#define MY_WIFI_CONFIG_TOOL       WIFI_MANAGER
 #endif
 
 #ifdef IS_SONOFF_S31
 #define DEVICE_TYPE  "sonoff-s31"
 #define DEVICE_NUM  IS_SONOFF_S31
-#define MY_WIFI_CONFIG_TOOL       WIFI_MANAGER  
+#define MY_WIFI_CONFIG_TOOL       WIFI_MANAGER
 #endif
 
 #ifdef IS_SONOFF_DEV
 #define DEVICE_TYPE  "sonoff-dev"
 #define DEVICE_NUM  IS_SONOFF_DEV
-#define MY_WIFI_CONFIG_TOOL       WIFI_MANAGER  
+#define MY_WIFI_CONFIG_TOOL       WIFI_MANAGER
 #endif
 
 /*********************************************************************************************\
@@ -285,7 +285,7 @@ Examples :
 
 //  ####################  WIFI ####################
 #undef WIFI_GATEWAY
-#define WIFI_GATEWAY           FIREWALL_IP 
+#define WIFI_GATEWAY           FIREWALL_IP
 
 #undef WIFI_DNS
 #define WIFI_DNS               FIREWALL_IP
@@ -339,14 +339,14 @@ Examples :
 
 #ifdef MY_MQTT_USER
 #undef MQTT_USER
-#define MQTT_USER           MY_MQTT_USER   
+#define MQTT_USER           MY_MQTT_USER
 #endif
 
 #undef MQTT_PASS
 #define MQTT_PASS            "Iridium1"       // [MqttPassword] Optional password
 
 #undef MQTT_FULLTOPIC
-#define MQTT_FULLTOPIC       "tasmota/%prefix%/%topic%/" // [FullTopic] Subscribe and Publish full topic name - Legacy topic
+#define MQTT_FULLTOPIC       "tasmota/%hostname%/%prefix%/%topic%/" // [FullTopic] Subscribe and Publish full topic name - Legacy topic
 
 #undef USE_HOME_ASSISTANT
 #define USE_HOME_ASSISTANT                       // Enable Home Assistant Discovery Support (+1k4 code)
@@ -354,17 +354,17 @@ Examples :
 #undef HOME_ASSISTANT_DISCOVERY_PREFIX
 #define HOME_ASSISTANT_DISCOVERY_PREFIX "homeassistant"  // Default Home Assistant discovery prefix is 'homeassistant'
 //#define HOME_ASSISTANT_DISCOVERY_PREFIX "tasmota"      // Nope, switching this back to the default.
-#undef  MQTT_BUTTON_RETAIN    
+#undef  MQTT_BUTTON_RETAIN
 #define MQTT_BUTTON_RETAIN     1                 // [ButtonRetain] Button may send retain flag (0 = off, 1 = on)
 
 #undef  MQTT_SWITCH_RETAIN
 #define MQTT_SWITCH_RETAIN     1                 // [SwitchRetain] Switch may send retain flag (0 = off, 1 = on)
 
-#undef MQTT_TELE_RETAIN    
+#undef MQTT_TELE_RETAIN
 #define MQTT_TELE_RETAIN     1                   // Tele messages may send retain flag (0 = off, 1 = on)
 
 #ifdef MQTT_PREFIX
-// #define MQTT_PREFIX  "tas"   
+// #define MQTT_PREFIX  "tas"
 // #define MQTT_TOPIC   "w-mini-" DEVICE_NUM
 #undef MQTT_FULLTOPIC
 #define MQTT_FULLTOPIC       MQTT_PREFIX "/%prefix%/%topic%/" // [FullTopic] Subscribe and Publish full topic name - Legacy topic
@@ -374,9 +374,9 @@ Examples :
 //  #################### END MQTT  ####################
 
 //  #################### BM WIFI ####################
-#ifdef USE_BURNING_MAN 
+#ifdef USE_BURNING_MAN
 
-#undef  STA_SSID1 
+#undef  STA_SSID1
 #define STA_SSID1              "TentAssistant"      // [Ssid1] Wifi SSID
 
 #undef  STA_PASS1
